@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # College Website Chatbot 🤖
 
 An AI-powered chatbot for college websites with streaming responses and multiple API integrations.
@@ -232,3 +233,7 @@ For questions or issues:
 
 **Version**: 1.0
 **Last Updated**: November 2024
+=======
+# collegeWebsiteChatbot
+Chatbot with college website knowledge base to answer any queries related to college related information.
+>>>>>>> edec7d7b290d0142bdc371ccc281ca8cf32242ab
