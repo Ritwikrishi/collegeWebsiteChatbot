@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Ollama Integration</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+        }
+
+        .test-container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        #result {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 4px;
+            white-space: pre-wrap;
+        }
+
+        .success {
+            color: green;
+        }
+
+        .error {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="test-container">
+        <h1>Ollama Integration Test</h1>
+        <p>This page tests the Ollama API connection at: <code>http://localhost:11434/api/generate</code></p>
+
+        <button onclick="testOllamaConnection()">Test Ollama Connection</button>
+        <button onclick="testWithPrompt()">Test with Sample Prompt</button>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        async function testOllamaConnection() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Testing connection...';
+
+            try {
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'phi3:mini',
+                        prompt: 'Hello, respond with "Connection successful!"',
+                        stream: false
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✓ Connection Successful!</span>\n\nResponse: ${data.response}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Connection Failed</span>\n\nError: ${error.message}\n\nMake sure:\n1. Ollama is running (run 'ollama serve' in terminal)\n2. You have the phi3:mini model installed (run 'ollama pull phi3:mini')\n3. The API endpoint is accessible at http://localhost:11434`;
+            }
+        }
+
+        async function testWithPrompt() {
+            const resultDiv = document.getElementById('result');
+            resultDiv.innerHTML = 'Sending test prompt...';
+
+            try {
+                const response = await fetch('http://localhost:11434/api/generate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        model: 'phi3:mini',
+                        prompt: 'You are a college chatbot assistant. A user asks: "What courses do you offer?" Respond helpfully.',
+                        stream: false,
+                        options: {
+                            temperature: 0.7
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                resultDiv.innerHTML = `<span class="success">✓ Test Successful!</span>\n\n<strong>Prompt:</strong> "What courses do you offer?"\n\n<strong>Response:</strong>\n${data.response}`;
+            } catch (error) {
+                resultDiv.innerHTML = `<span class="error">✗ Test Failed</span>\n\nError: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+
+</html>
