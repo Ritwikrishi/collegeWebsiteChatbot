@@ -1,5 +1,5 @@
 # API Keys and Configuration
-config.js
+# config.js - UNCOMMENTED TO ALLOW DEPLOYMENT WITH API KEY
 
 # Environment files
 .env
