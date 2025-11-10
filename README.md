@@ -1,44 +1,90 @@
-<<<<<<< HEAD
-# College Website Chatbot 🤖
+# College Website Chatbot with RAG 🤖
 
-An AI-powered chatbot for college websites with streaming responses and multiple API integrations.
+An intelligent AI-powered chatbot for college websites with **RAG (Retrieval-Augmented Generation)**, automatic web scraping, and streaming responses. The chatbot answers questions using actual content scraped from college websites.
 
 ![Chatbot Demo](https://img.shields.io/badge/Status-Live-success)
 ![License](https://img.shields.io/badge/License-MIT-blue)
+![Python](https://img.shields.io/badge/Python-3.8+-blue)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-yellow)
 
 ## ✨ Features
 
+### Core Features
 - 🚀 **Real-time Streaming Responses** - ChatGPT-like word-by-word text generation
-- 🔄 **Multiple AI Backends** - Groq API, Ollama, or rule-based fallback
-- 💬 **Smart Conversations** - Maintains context across messages
-- 📚 **Knowledge Base** - Pre-configured college information
-- 🎨 **Modern UI** - Responsive design with smooth animations and light blue theme
+- 🧠 **RAG (Retrieval-Augmented Generation)** - Answers based on actual college website content
+- 🕷️ **Smart Web Scraper** - Automatically discovers and scrapes college websites
+- 🔍 **Semantic Search** - Finds relevant information using AI embeddings
+- 💬 **Context-Aware** - Maintains conversation history
+- 📚 **Source Citations** - Shows links to source pages
+
+### Technical Features
+- 🤖 **Groq API Integration** - Fast, free cloud AI inference
+- 🔄 **Automatic URL Discovery** - Uses sitemap.xml to find all pages
+- 🎯 **Intelligent Filtering** - Prioritizes important pages (admissions, courses, etc.)
+- 📊 **Vector Embeddings** - Browser-based semantic search with Transformers.js
+- 🎨 **Modern UI** - Responsive design with smooth animations
 - 🔐 **Secure** - API keys kept separate from codebase
 
+## 🏗️ Architecture
+
+```
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│  Website    │────▶│ Smart Scraper│────▶│ Documents   │
+│ (Sitemap)   │     │ + Processor  │     │ (Chunks)    │
+└─────────────┘     └──────────────┘     └─────────────┘
+                                                 │
+                                                 ▼
+                                          ┌─────────────┐
+                                          │ Embeddings  │
+                                          │ Generator   │
+                                          └─────────────┘
+                                                 │
+                                                 ▼
+┌─────────────┐     ┌──────────────┐     ┌─────────────┐
+│   User      │────▶│   Chatbot    │────▶│  RAG Search │
+│   Query     │     │  (Frontend)  │     │   + LLM     │
+└─────────────┘     └──────────────┘     └─────────────┘
+```
+
 ## 🚀 Quick Start
+
+### Prerequisites
+- Python 3.8+
+- Node.js (optional, for local server)
+- Git
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/collegeWebsiteChatbot.git
+git clone https://github.com/Ritwikrishi/collegeWebsiteChatbot.git
 cd collegeWebsiteChatbot
 ```
 
-### 2. Configure API Keys
+### 2. Install Python Dependencies
+
+```bash
+pip install -r requirements.txt
+```
+
+This installs:
+- `requests` - HTTP library for web scraping
+- `beautifulsoup4` - HTML parsing
+- `html2text` - HTML to Markdown conversion
+- `sentence-transformers` - Generate embeddings for RAG
+- `torch` - Deep learning library (required by sentence-transformers)
+
+### 3. Configure API Keys
 
 ```bash
 # Copy the example config file
 cp config.example.js config.js
-
-# Edit config.js and add your Groq API key
-# Get a free key from https://console.groq.com
 ```
 
-Edit `config.js`:
+Edit `config.js` and add your Groq API key:
 ```javascript
 const CONFIG = {
     groq: {
-        apiKey: 'YOUR_GROQ_API_KEY_HERE', // Add your key here
+        apiKey: 'YOUR_GROQ_API_KEY_HERE', // Get from https://console.groq.com
         model: 'llama-3.1-8b-instant',
         endpoint: 'https://api.groq.com/openai/v1/chat/completions'
     },
@@ -46,194 +92,335 @@ const CONFIG = {
 };
 ```
 
-### 3. Run Locally
+### 4. Scrape College Website & Generate Knowledge Base
 
 ```bash
-# Start a local server (Python 3)
+# Step 1: Configure the scraper (edit scraper_config.json)
+# Change base_url to your target college website
+
+# Step 2: Run the scraper
+python run_scraper.py
+
+# Step 3: Process documents into chunks
+python process_documents.py
+
+# Step 4: Generate embeddings for RAG
+python generate_embeddings.py
+```
+
+**Output:** Creates `data/embeddings.json` (~15-20 MB) with the knowledge base.
+
+### 5. Run Locally
+
+```bash
+# Start local server
 python -m http.server 8000
 
 # Or use Node.js
 npx http-server -p 8000
 ```
 
-Visit: `http://localhost:8000/college-website.html`
-
-## 🌐 Deploy to GitHub Pages
-
-### Step 1: Create GitHub Repository
-
-1. Go to [GitHub](https://github.com) and create a new repository
-2. Name it `collegeWebsiteChatbot` (or any name you prefer)
-3. **Don't** add README, .gitignore, or license (we already have them)
-
-### Step 2: Push to GitHub
-
-```bash
-# Initialize git (if not already done)
-git init
-
-# Add all files
-git add .
-
-# Commit
-git commit -m "Initial commit: College chatbot with AI integration"
-
-# Add remote
-git remote add origin https://github.com/YOUR_USERNAME/collegeWebsiteChatbot.git
-
-# Push to main branch
-git branch -M main
-git push -u origin main
-```
-
-### Step 3: Enable GitHub Pages
-
-1. Go to your repository on GitHub
-2. Click **Settings** → **Pages**
-3. Under **Source**, select **main** branch
-4. Click **Save**
-5. Wait 1-2 minutes for deployment
-
-Your site will be live at: `https://YOUR_USERNAME.github.io/collegeWebsiteChatbot/college-website.html`
-
-### Step 4: API Key for Live Site
-
-**⚠️ IMPORTANT:** The chatbot will run in **rule-based mode** on GitHub Pages by default (no AI) since `config.js` is not included.
-
-**To enable AI on GitHub Pages:**
-
-**Option 1: Use Rule-Based Mode** (Recommended - No API key needed)
-- The chatbot works perfectly without AI using pattern matching
-- No API costs, instant responses, works offline
-- Best for public demos and POCs
-
-**Option 2: Client-Side API Key** (For personal/internal use only)
-- Edit `config.js` with your API key
-- Remove `config.js` from `.gitignore`
-- Commit and push
-- **⚠️ WARNING:** Your API key will be publicly visible! Only do this for demos or if you're okay with public access to your API key.
-
-**Option 3: Build a Backend** (Recommended for production)
-- Set up a backend server (Node.js, Python, etc.)
-- Store API keys securely on server
-- Have frontend call your backend instead of Groq directly
-- Prevents API key exposure
+Visit: `http://localhost:8000/index.html`
 
 ## 📁 Project Structure
 
 ```
 collegeWebsiteChatbot/
-├── college-website.html    # Main website
-├── chatbot.js               # Chatbot logic
-├── knowledge-base.js        # College data and FAQs
-├── styles.css               # Styling (light blue theme)
-├── config.example.js        # Configuration template
-├── config.js                # Your API keys (NOT in git)
-├── .gitignore               # Excludes sensitive files
-├── README.md                # This file
-├── API_SETUP.md             # API configuration guide
-└── PROJECT_SUMMARY.md       # Technical details
+├── index.html                  # Main website (Bharati College)
+├── chatbot.js                  # Chatbot with RAG integration
+├── rag-client.js               # RAG search client (Transformers.js)
+├── knowledge-base.js           # Fallback knowledge base
+├── styles.css                  # UI styling
+├── config.js                   # API keys (NOT in git)
+├── config.example.js           # Config template
+│
+├── Smart Scraper System
+├── sitemap_parser.py           # Discovers URLs from sitemap.xml
+├── url_filter.py               # Filters & prioritizes URLs
+├── smart_scraper.py            # Main scraper (HTML to Markdown)
+├── run_scraper.py              # CLI to run scraper
+├── scraper_config.json         # Scraper configuration
+│
+├── RAG Pipeline
+├── process_documents.py        # Chunks documents for RAG
+├── generate_embeddings.py      # Creates vector embeddings
+│
+├── Data (Generated)
+├── data/
+│   ├── scraped_data.json       # Raw scraped content
+│   ├── knowledge_base.json     # Chunked documents
+│   └── embeddings.json         # Vector embeddings (15-20 MB)
+│
+├── Documentation
+├── README.md                   # This file
+├── README_SCRAPER.md           # Detailed scraper guide
+├── API_SETUP.md               # API configuration guide
+└── requirements.txt            # Python dependencies
 ```
 
-## 🔧 Configuration
+## 🕷️ Smart Scraper System
+
+### How It Works
+
+1. **Sitemap Discovery** - Automatically finds sitemap.xml from the college website
+2. **URL Filtering** - Filters URLs by keywords (admission, course, department, etc.)
+3. **Priority Scoring** - Ranks URLs by importance
+4. **Content Extraction** - Scrapes HTML and converts to clean Markdown
+5. **No Hardcoded URLs** - Works with any college website!
+
+### Configuration
+
+Edit `scraper_config.json`:
+
+```json
+{
+  "base_url": "https://www.bharaticollege.du.ac.in/",
+  "max_pages": 150,
+  "delay": 2,
+  "filters": {
+    "include_keywords": ["admission", "course", "department"],
+    "exclude_keywords": ["login", "admin"],
+    "min_words": 0
+  }
+}
+```
+
+### Usage
+
+```bash
+# Scrape with default config
+python run_scraper.py
+
+# Scrape with custom config
+python run_scraper.py my_config.json
+```
+
+**See [README_SCRAPER.md](README_SCRAPER.md) for detailed documentation.**
+
+## 🧠 RAG (Retrieval-Augmented Generation)
+
+### How It Works
+
+1. **User asks question** → "What courses does Bharati College offer?"
+2. **Semantic Search** → Searches knowledge base using embeddings
+3. **Find relevant chunks** → Top 3 most relevant content pieces
+4. **Augment prompt** → Adds context to LLM prompt
+5. **Generate answer** → LLM generates accurate response with sources
+
+### Embedding Model
+
+- **Model**: `all-MiniLM-L6-v2` (384 dimensions)
+- **Python**: sentence-transformers library
+- **Browser**: Transformers.js (same model)
+- **Search**: Cosine similarity
+
+### Benefits
+
+✅ **Accurate answers** - Based on actual college data
+✅ **Up-to-date** - Re-scrape anytime to update knowledge
+✅ **Source citations** - Shows links to original pages
+✅ **No hallucinations** - LLM answers from provided context
+
+## 🎯 Use Cases
+
+### For Different Colleges
+
+1. **Change target website**
+   ```json
+   // scraper_config.json
+   {
+     "base_url": "https://your-college.edu/"
+   }
+   ```
+
+2. **Run pipeline**
+   ```bash
+   python run_scraper.py
+   python process_documents.py
+   python generate_embeddings.py
+   ```
+
+3. **Deploy** - Your chatbot now knows about the new college!
+
+### For Different Sections
+
+Customize `include_keywords` in config to focus on specific sections:
+```json
+{
+  "include_keywords": ["research", "faculty", "publication"]
+}
+```
+
+## 🌐 Deploy to GitHub Pages
+
+### Step 1: Push to GitHub
+
+```bash
+git add .
+git commit -m "Add RAG chatbot with smart scraper"
+git push origin main
+```
+
+### Step 2: Enable GitHub Pages
+
+1. Go to repository **Settings** → **Pages**
+2. Select **main** branch
+3. Click **Save**
+4. Wait 1-2 minutes
+
+Live at: `https://YOUR_USERNAME.github.io/collegeWebsiteChatbot/`
+
+### ⚠️ Important: API Keys on GitHub Pages
+
+**Option 1: Rule-Based Mode** (No API key)
+- Chatbot works without AI using pattern matching
+- Good for demos
+
+**Option 2: Expose API Key** (For personal demos only)
+- Remove `config.js` from `.gitignore`
+- Commit and push
+- ⚠️ Your key will be public!
+
+**Option 3: Backend Server** (Recommended for production)
+- Build a backend to hide API keys
+- Frontend calls your backend API
+
+## 🔧 Configuration Options
 
 ### API Modes
 
-Edit `config.js` to switch between modes:
-
 ```javascript
+// config.js
 const CONFIG = {
-    apiMode: 'groq',      // Options: 'groq', 'ollama', 'rule-based'
+    apiMode: 'groq',      // 'groq', 'ollama', or 'rule-based'
     // ...
 };
 ```
 
-- **groq**: Fast, free cloud AI (requires API key)
-- **ollama**: Local AI models (requires Ollama installed)
-- **rule-based**: Pattern matching (no setup required)
+### Scraper Settings
 
-### Customize Knowledge Base
-
-Edit `knowledge-base.js` to update:
-- College information
-- Courses and programs
-- Admission details
-- FAQ responses
-
-## 🎨 Customize Appearance
-
-The chatbot features a modern light blue/cyan color scheme. Edit `styles.css` to customize:
-- Colors and theme (currently `#00d4ff` and `#00b4d8`)
-- Chat window size
-- Button position
-- Animations
-
-## 🔐 Security Best Practices
-
-1. **Never commit `config.js`** - It's in `.gitignore` for a reason
-2. **Don't hardcode API keys** - Use the config file
-3. **Rotate keys regularly** - Get new keys periodically
-4. **Monitor usage** - Check your Groq dashboard for unusual activity
-5. **For production** - Use a backend server to hide API keys
+```json
+{
+  "max_pages": 150,        // Maximum URLs to scrape
+  "delay": 2,              // Seconds between requests
+  "min_words": 0,          // Minimum words per page (0 = all)
+  "priority_keywords": {
+    "high": ["admission", "course"],     // +20 points
+    "medium": ["faculty", "research"],   // +10 points
+    "low": ["event", "news"]             // +5 points
+  }
+}
+```
 
 ## 📊 Features Comparison
 
-| Feature | Groq API | Ollama | Rule-based |
-|---------|----------|--------|------------|
-| Speed | ⚡⚡⚡ | 🐌 | ⚡⚡⚡ |
-| Quality | ⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ |
-| Cost | Free | Free | Free |
-| Setup | Easy | Hard | Easy |
-| Internet | Required | Not required | Not required |
-| Streaming | ✅ | ✅ | ❌ |
+| Feature | With RAG | Without RAG |
+|---------|----------|-------------|
+| Accuracy | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ |
+| Up-to-date | ✅ Rescrape anytime | ❌ Manual updates |
+| Sources | ✅ Shows links | ❌ No sources |
+| Setup | 🔧 Requires pipeline | ✅ Simple |
+| Knowledge | 🌐 Entire website | 📝 Hardcoded |
 
 ## 🐛 Troubleshooting
 
-### Chatbot not responding?
-1. Check browser console for errors (F12)
-2. Verify `config.js` exists and has valid API key
-3. Check Groq API status: https://status.groq.com
+### Scraper Issues
 
-### API key not working?
-1. Get a new key from https://console.groq.com
-2. Make sure you copied the entire key
-3. Check for extra spaces in `config.js`
+**Problem:** No pages scraped
+```bash
+# Solution 1: Set min_words to 0
+"min_words": 0
 
-### Streaming not working?
-1. Clear browser cache (Ctrl+Shift+R)
-2. Check if `config.js` is loaded (view page source)
-3. Verify API mode is set to 'groq' or 'ollama'
+# Solution 2: Check if website has sitemap
+# Visit: https://example.com/sitemap.xml
+```
 
-### Messages appearing in wrong order?
-1. Hard refresh the page (Ctrl+Shift+R)
-2. Clear browser cache
-3. Check console for errors
+**Problem:** Import errors
+```bash
+pip install -r requirements.txt
+```
 
-## 📝 License
+### RAG Issues
 
-MIT License - feel free to use this for your college or organization!
+**Problem:** Chatbot doesn't show sources
+```
+1. Check if data/embeddings.json exists
+2. Check browser console for errors (F12)
+3. Verify rag-client.js is loaded
+```
+
+**Problem:** Slow loading
+```
+Embeddings file is large (15-20 MB)
+- First load takes 5-10 seconds
+- Subsequent loads are cached
+```
+
+## 📝 Example: Adding New College
+
+```bash
+# 1. Update config
+{
+  "base_url": "https://newcollege.edu/"
+}
+
+# 2. Run pipeline
+python run_scraper.py
+python process_documents.py
+python generate_embeddings.py
+
+# 3. Update branding
+# Edit index.html - change college name, logo, etc.
+# Edit chatbot.js - update welcome message
+
+# 4. Test locally
+python -m http.server 8000
+
+# 5. Deploy
+git add .
+git commit -m "Add NewCollege chatbot"
+git push
+```
+
+## 🔐 Security Best Practices
+
+1. ✅ Never commit `config.js`
+2. ✅ Add `config.js` to `.gitignore`
+3. ✅ Rotate API keys regularly
+4. ✅ Monitor API usage
+5. ✅ Use backend server for production
+
+## 📚 Documentation
+
+- **[README_SCRAPER.md](README_SCRAPER.md)** - Detailed scraper guide
+- **[API_SETUP.md](API_SETUP.md)** - API configuration
+- **scraper_config.json** - Configuration reference
 
 ## 🙏 Credits
 
 Built with:
 - **Groq API** - Ultra-fast AI inference
+- **Transformers.js** - Browser-based ML
+- **sentence-transformers** - Embedding generation
+- **BeautifulSoup** - Web scraping
 - **Claude Code** - Development assistant
-- **Vanilla JavaScript** - No frameworks needed!
 
 ## 📧 Support
 
 For questions or issues:
-1. Check the [API Setup Guide](API_SETUP.md)
-2. Read the [Project Summary](PROJECT_SUMMARY.md)
-3. Open an issue on GitHub
+1. Check documentation files
+2. Open an issue on GitHub
+3. Review troubleshooting section
+
+## 📝 License
+
+MIT License - Free to use for educational institutions and personal projects.
 
 ---
 
 **Made with ❤️ for educational institutions**
 
-**Version**: 1.0
-**Last Updated**: November 2024
-=======
-# collegeWebsiteChatbot
-Chatbot with college website knowledge base to answer any queries related to college related information.
->>>>>>> edec7d7b290d0142bdc371ccc281ca8cf32242ab
+**Live Demo**: [Bharati College Chatbot](https://ritwikrishi.github.io/collegeWebsiteChatbot/)
+
+**Version**: 2.0 (with RAG & Smart Scraper)
+**Last Updated**: November 2025
