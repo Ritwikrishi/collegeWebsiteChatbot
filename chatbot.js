@@ -67,7 +67,7 @@ class CollegeChatbot {
             
             <div class="chatbot-window" id="chatbot-window">
                 <div class="chatbot-header">
-                    <h3>SXC Assistant</h3>
+                    <h3>Bharati College Assistant</h3>
                     <button class="chatbot-close" id="chatbot-close">&times;</button>
                 </div>
                 <div class="chatbot-messages" id="chatbot-messages"></div>
@@ -112,7 +112,7 @@ class CollegeChatbot {
 
     sendWelcomeMessage() {
         setTimeout(() => {
-            this.addBotMessage("Hello! 👋 I'm the St. Xavier's College virtual assistant. I can help you with information about courses, admissions, facilities, and more. How can I assist you today?");
+            this.addBotMessage("Hello! 👋 I'm the Bharati College virtual assistant. I can help you with information about courses, admissions, facilities, and more. How can I assist you today?");
         }, 500);
     }
 
@@ -500,22 +500,18 @@ class CollegeChatbot {
     }
 
     buildSystemPrompt() {
-        const kb = knowledgeBase;
-        return `You are St. Xavier's College virtual assistant. Be helpful and concise.
+        return `You are Bharati College (University of Delhi) virtual assistant. Be helpful, friendly, and concise.
 
-College: ${kb.college.name}, Est. ${kb.college.established}, ${kb.college.affiliation}
-Location: ${kb.college.location}
-Contact: ${kb.college.phone}, ${kb.college.email}
+Your role:
+- Answer questions about Bharati College using ONLY information from the knowledge base provided
+- If information is not in the knowledge base, politely say you don't have that specific information
+- Be accurate and cite sources when possible
+- Keep responses brief but informative
+- Direct users to contact the college for details not in your knowledge base
 
-Courses: B.A. English, B.Sc. CS, B.Com, B.A. Economics, B.Sc. Math, B.A. Psychology
+Contact: For specific inquiries, students should contact Bharati College directly through their official website.
 
-Admissions 2025-26: Apply May 15-Jun 30, Classes start Aug 1
-
-Facilities: Library (100k+ books), Computer Labs, Sports, Auditorium, Cafeteria, Transport
-
-Stats: 5000+ students, 200+ faculty, 95% placement
-
-Keep responses brief, friendly, and accurate. Direct users to contact for details not provided.`;
+Keep responses brief, friendly, and accurate.`;
     }
 
     buildConversationContext() {
