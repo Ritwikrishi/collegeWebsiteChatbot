@@ -9,7 +9,7 @@ class CollegeChatbot {
         if (typeof CONFIG !== 'undefined') {
             this.apiMode = CONFIG.apiMode || 'rule-based';
             this.groqEndpoint = CONFIG.groq?.endpoint || 'https://api.groq.com/openai/v1/chat/completions';
-            this.groqApiKey = CONFIG.groq?.apiKey || '';
+            this.groqApiKey = CONFIG.groq?.apiKey || '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';
             this.groqModel = CONFIG.groq?.model || 'llama-3.1-8b-instant';
             this.ollamaEndpoint = CONFIG.ollama?.endpoint || 'http://localhost:11434/api/generate';
             this.ollamaModel = CONFIG.ollama?.model || 'phi3:mini';
