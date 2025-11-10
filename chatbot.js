@@ -24,7 +24,25 @@ class CollegeChatbot {
             this.ollamaModel = 'phi3:mini';
         }
 
+        // Initialize RAG
+        this.rag = null;
+        this.ragReady = false;
+        this.initRAG();
+
         this.init();
+    }
+
+    async initRAG() {
+        try {
+            this.rag = new RAGClient();
+            this.ragReady = await this.rag.init();
+            if (this.ragReady) {
+                console.log('✅ RAG system initialized');
+            }
+        } catch (error) {
+            console.warn('⚠️ RAG system not available:', error.message);
+            this.ragReady = false;
+        }
     }
 
     init() {
@@ -143,8 +161,34 @@ class CollegeChatbot {
             // Add user message to conversation history
             this.conversationHistory.push({ role: 'user', content: message });
 
-            // Build system prompt
-            const systemPrompt = this.buildSystemPrompt();
+            // Try to get RAG context
+            let ragContext = '';
+            let sources = [];
+            if (this.ragReady && this.rag) {
+                try {
+                    console.log('🔍 Searching knowledge base...');
+                    const searchResults = await this.rag.search(message, 3);
+
+                    if (searchResults.length > 0) {
+                        ragContext = '\n\nRELEVANT INFORMATION FROM KNOWLEDGE BASE:\n';
+                        searchResults.forEach((result, idx) => {
+                            ragContext += `\n[Source ${idx + 1}: ${result.chunk.metadata.title}]\n${result.chunk.content}\n`;
+                            sources.push({
+                                title: result.chunk.metadata.title,
+                                url: result.chunk.metadata.url,
+                                score: result.score
+                            });
+                        });
+                        console.log(`✓ Found ${searchResults.length} relevant chunks`);
+                    }
+                } catch (error) {
+                    console.warn('⚠️ RAG search failed:', error);
+                }
+            }
+
+            // Build system prompt with RAG context
+            const systemPrompt = this.buildSystemPrompt() + ragContext +
+                (ragContext ? '\n\nUse the above information from the knowledge base to answer the user\'s question accurately. If the information is not in the knowledge base, say so.' : '');
 
             // Build messages array for chat API
             const messages = [
@@ -226,7 +270,18 @@ class CollegeChatbot {
             // Remove cursor after streaming is done
             const contentDiv = document.getElementById('streaming-content');
             if (contentDiv) {
-                const formattedMessage = fullResponse.trim().replace(/\n/g, '<br>');
+                let formattedMessage = fullResponse.trim().replace(/\n/g, '<br>');
+
+                // Add source citations if RAG was used
+                if (sources.length > 0) {
+                    formattedMessage += '<br><br><div style="font-size: 0.85em; color: #666; border-top: 1px solid #e0e0e0; padding-top: 8px; margin-top: 8px;">';
+                    formattedMessage += '<strong>📚 Sources:</strong><br>';
+                    sources.forEach((source, idx) => {
+                        formattedMessage += `${idx + 1}. <a href="${source.url}" target="_blank" style="color: #4A90E2; text-decoration: none;">${source.title}</a><br>`;
+                    });
+                    formattedMessage += '</div>';
+                }
+
                 contentDiv.innerHTML = formattedMessage;
                 // Remove the content ID so next message doesn't update this one
                 contentDiv.removeAttribute('id');

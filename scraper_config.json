@@ -1,0 +1,46 @@
+{
+  "_comment": "Smart Scraper Configuration",
+
+  "base_url": "https://www.bharaticollege.du.ac.in/",
+
+  "max_pages": 150,
+  "delay": 2,
+
+  "strategies": {
+    "_comment": "Which strategies to use for discovering URLs",
+    "try_sitemap": true
+  },
+
+  "filters": {
+    "_comment": "Keywords and patterns for filtering URLs",
+
+    "include_keywords": [
+      "admission", "course", "program", "department", "academic",
+      "facility", "infrastructure", "fee", "scholarship", "placement",
+      "career", "faculty", "research", "about", "contact"
+    ],
+
+    "exclude_keywords": [
+      "privacy", "terms", "cookie", "legal", "disclaimer",
+      "login", "admin", "wp-admin", "wp-content",
+      "404", "error", "search", "tag", "category", "author",
+      "feed", "rss", "sitemap", "robots"
+    ],
+
+    "exclude_extensions": [
+      ".pdf", ".doc", ".docx", ".xls", ".xlsx", ".ppt", ".pptx",
+      ".jpg", ".jpeg", ".png", ".gif", ".svg",
+      ".mp4", ".avi", ".mp3",
+      ".zip", ".rar", ".7z"
+    ],
+
+    "min_words": 0
+  },
+
+  "priority_keywords": {
+    "_comment": "Keywords for scoring URL importance",
+    "high": ["admission", "course", "program", "department", "fee"],
+    "medium": ["faculty", "research", "facility", "infrastructure", "placement"],
+    "low": ["event", "news", "gallery", "notice"]
+  }
+}
