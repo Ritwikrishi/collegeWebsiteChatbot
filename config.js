@@ -4,7 +4,7 @@
 const CONFIG = {
     // Groq API Configuration
     groq: {
-        apiKey: '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',
+        apiKey: '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',
         model: 'llama-3.1-8b-instant',
         endpoint: 'https://api.groq.com/openai/v1/chat/completions'
     },

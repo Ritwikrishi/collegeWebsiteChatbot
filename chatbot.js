@@ -18,7 +18,7 @@ class CollegeChatbot {
             console.warn('⚠️ config.js not found. Using rule-based mode. Copy config.example.js to config.js and add your API key.');
             this.apiMode = 'rule-based';
             this.groqEndpoint = 'https://api.groq.com/openai/v1/chat/completions';
-            this.groqApiKey = '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';
+            this.groqApiKey = '';
             this.groqModel = 'llama-3.1-8b-instant';
             this.ollamaEndpoint = 'http://localhost:11434/api/generate';
             this.ollamaModel = 'phi3:mini';
